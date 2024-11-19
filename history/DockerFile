@@ -1,0 +1,29 @@
+# Используем официальный Node.js образ
+FROM node:14
+
+
+# Устанавливаем рабочую директорию
+WORKDIR /usr/src/app
+RUN ls -al
+# Копируем файлы package.json и package-lock.json
+COPY history/package*.json ./ ./
+COPY history/tsconfig*.json ./
+# Устанавливаем зависимости
+RUN npm install
+
+# Копируем все остальные файлы
+COPY history/ ./
+# RUN npm install --save-dev typescript
+# RUN tsc 
+RUN npm run build 
+# Устанавливаем переменные окружения
+ENV NODE_ENV=production
+ENV DATABASE_URL=postgres://user:password@db:5432/database
+
+# Открываем порт
+EXPOSE 4000
+
+# Запускаем приложение
+# CMD ["tsс", ""]
+
+CMD ["node", "dist/index.js"]
